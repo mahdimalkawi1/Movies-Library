@@ -5,6 +5,20 @@ const app = express();
 const port = 3005;
 
 app.get('/', moviesHandler);
+app.get('/favorite', favoriteHandler);
+app.get('*',handleNotFoundError);
+
+
+
+function handleNotFoundError(req,res){
+    res.status(404).send("Not Found")
+}
+
+app.use((err, req, res, next) => {
+    console.error(err.stack)
+    res.status(500).send('Something broke!')
+  })
+
 
 function moviesHandler(req,res){
 
@@ -22,7 +36,6 @@ function Movie(title,poster_path,overview){
 
 
 
-app.get('/favorite', favoriteHandler);
 
 function favoriteHandler(req,res){
 
