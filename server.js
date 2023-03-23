@@ -10,6 +10,8 @@ app.get('/', moviesHandler);
 app.get('/favorite', favoriteHandler);
 app.get('/trending', trendingHandler);
 app.get('/search',searchHandler);
+app.get('/upComingMovie',upComingMovieHandler);
+app.get('/nowPlaying',nowPlayingHandler)
 app.get('*',handleNotFoundError);
 app.use(cors())
 
@@ -69,6 +71,43 @@ function searchHandler (req,res){
             return new Requets(search.id, search.title,search.release_date,search.poster_path,search.overview)
         })
         res.json(dataSearch);
+    })
+    .catch((err)=>{
+        res.send("Error");
+    })
+
+} 
+
+function nowPlayingHandler (req,res){
+
+    let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=326b8311b1e8a565cab3b10b651c097b&language=en-US&page=1`;
+    axios.get(url)
+    .then((result)=>{
+
+        let datanowPlaying = result.data.results.map((now)=>{
+            return new Requets(now.title,now.overview)
+        })
+
+        res.json(datanowPlaying);
+    })
+    .catch((err)=>{
+        res.send("Error");
+    })
+
+} 
+
+
+function upComingMovieHandler (req,res){
+
+    let url = `https://api.themoviedb.org/3/search/movie?api_key=326b8311b1e8a565cab3b10b651c097b&language=en-US&query=The&page=2`;
+    axios.get(url)
+    .then((result)=>{
+
+        let dataUpcomingMovie = result.data.results.map((up)=>{
+            return new Requets(up.title,up.overview)
+        })
+
+        res.json(dataUpcomingMovie);
     })
     .catch((err)=>{
         res.send("Error");
