@@ -2,9 +2,10 @@
 const express = require('express');
 const cors = require ('cors');
 const axios = require('axios');
+require('dotenv').config();
 const movieData = require('./Movie Data/data.json');
 const app = express();
-const port = 3005;
+const port = process.env.port;
 
 app.get('/', moviesHandler);
 app.get('/favorite', favoriteHandler);
