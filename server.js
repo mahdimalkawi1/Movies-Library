@@ -20,6 +20,9 @@ app.get('/upComingMovie',upComingMovieHandler);
 app.get('/nowPlaying',nowPlayingHandler);
 app.post('/addMovie',addMovieHandler);
 app.get('/getMovies',getMoviesHandler);
+app.put('/updateMovie/:id',updateHandler);
+app.delete('/deleteMovie/:id', deleteHandler);
+app.get('/getMovie/:id',getMovieHandler);
 app.use(bodyParser.urlencoded({extended: false }));
 app.use(bodyParser.json())
 app.get('*',handleNotFoundError);
@@ -145,6 +148,41 @@ function  getMoviesHandler (req,res){
 
     ).catch()
 }
+
+function updateHandler(req,res){
+    let id = req.params.id;
+    let {comment} = req.body;
+    let sql=`UPDATE movies SET comment = $1 WHERE id = $2 RETURNING *;`;
+    let values = [comment, id];
+    client.query(sql,values).then(result=>{
+        res.send(result.rows)
+    }).catch()
+
+}
+
+function deleteHandler(req,res){
+    let id = req.params.id; 
+    let sql=`DELETE FROM movies WHERE id = $1;` ;
+    let value = [id];
+    client.query(sql,value).then(result=>{
+        res.status(204).send("DELETED");
+    }).catch()
+
+}
+
+function getMovieHandler(req,res){
+    let id = req.params.id 
+    let sql=`SELECT * FROM movies WHERE id = $1;`
+    let values = [id];
+    client.query(sql,values).then((result)=>{
+        res.json(result.rows)
+    }
+
+    ).catch()
+
+}
+
+
 
 function Movie(title,poster_path,overview,id,release_date){
     
