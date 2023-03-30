@@ -6,13 +6,25 @@ require('dotenv').config();
 const movieData = require('./Movie Data/data.json');
 const app = express();
 const port = process.env.port;
+const bodyParser = require('body-parser');
+const password = process.env.PASSWORD;
+const { Client } = require('pg')
+let url = `postgres://mahdi:${password}@localhost:5432/mahdi`;
+const client = new Client(url)
 
 app.get('/', moviesHandler);
 app.get('/favorite', favoriteHandler);
 app.get('/trending', trendingHandler);
 app.get('/search',searchHandler);
 app.get('/upComingMovie',upComingMovieHandler);
-app.get('/nowPlaying',nowPlayingHandler)
+app.get('/nowPlaying',nowPlayingHandler);
+app.post('/addMovie',addMovieHandler);
+app.get('/getMovies',getMoviesHandler);
+app.put('/updateMovie/:id',updateHandler);
+app.delete('/deleteMovie/:id', deleteHandler);
+app.get('/getMovie/:id',getMovieHandler);
+app.use(bodyParser.urlencoded({extended: false }));
+app.use(bodyParser.json())
 app.get('*',handleNotFoundError);
 app.use(cors())
 
@@ -116,6 +128,62 @@ function upComingMovieHandler (req,res){
 
 } 
 
+function addMovieHandler(req,res){
+    let {title,release_date,poster_path} = req.body;
+    let sql = `INSERT INTO movies (title,release_date,poster_path)
+    VALUES ($1,$2,$3) RETURNING *;`
+    let values = [title,release_date,poster_path];
+    client.query(sql,values).then((result)=>{
+        res.status(201).json(result.rows)
+
+    }
+    ).catch() 
+
+}
+function  getMoviesHandler (req,res){
+    let sql=`SELECT * FROM movies;`
+    client.query(sql).then((result)=>{
+        res.json(result.rows)
+    }
+
+    ).catch()
+}
+
+function updateHandler(req,res){
+    let id = req.params.id;
+    let {comment} = req.body;
+    let sql=`UPDATE movies SET comment = $1 WHERE id = $2 RETURNING *;`;
+    let values = [comment, id];
+    client.query(sql,values).then(result=>{
+        res.send(result.rows)
+    }).catch()
+
+}
+
+function deleteHandler(req,res){
+    let id = req.params.id; 
+    let sql=`DELETE FROM movies WHERE id = $1;` ;
+    let value = [id];
+    client.query(sql,value).then(result=>{
+        res.status(204).send("DELETED");
+    }).catch()
+
+}
+
+function getMovieHandler(req,res){
+    let id = req.params.id 
+    let sql=`SELECT * FROM movies WHERE id = $1;`
+    let values = [id];
+    client.query(sql,values).then((result)=>{
+        res.json(result.rows)
+    }
+
+    ).catch()
+
+}
+
+
+
 function Movie(title,poster_path,overview,id,release_date){
     
     this.title=title;
@@ -132,6 +200,8 @@ function Movie(title,poster_path,overview,id,release_date){
 
 
 
-app.listen(port, () => {
-    console.log(`port:${port}`);
-})
+client.connect().then(()=>{
+    app.listen(port, () => {
+      console.log(`Example app listening on port ${port}`);
+  })
+}).catch()

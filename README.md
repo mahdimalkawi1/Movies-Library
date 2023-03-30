@@ -3,7 +3,7 @@
 **Author Name**: **Mahdi Malkawi**
 
 ## WRRC
-![WRRC](./WRRC2.jpeg)
+![WRRC](./WRRC3.jpeg)
 ## Overview
 In this app you will find trending movies.
 ## Getting Started
