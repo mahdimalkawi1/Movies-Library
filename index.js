@@ -9,7 +9,7 @@ const port = process.env.port;
 const bodyParser = require('body-parser');
 const password = process.env.PASSWORD;
 const { Client } = require('pg')
-let url = `postgres://mahdi:${password}@localhost:5432/mahdi`;
+let url = `postgres://bygzbewp:d0C4K5AWixab7hXywU_dmuu8vlP9U0if@kashin.db.elephantsql.com/bygzbewp`;
 const client = new Client(url)
 
 app.get('/', moviesHandler);
