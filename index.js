@@ -69,7 +69,7 @@ function trendingHandler(req,res){
     })
        
     .catch((err)=>{
-        res.send("Error");
+        res.status(500).send("Error");
     })
 }
 
@@ -85,7 +85,7 @@ function searchHandler (req,res){
         res.json(dataSearch);
     })
     .catch((err)=>{
-        res.send("Error");
+        res.status(500).send("Error");
     })
 
 } 
@@ -103,7 +103,7 @@ function nowPlayingHandler (req,res){
         res.json(datanowPlaying);
     })
     .catch((err)=>{
-        res.send("Error");
+        res.status(500).send("Error");
     })
 
 } 
@@ -122,7 +122,7 @@ function upComingMovieHandler (req,res){
         res.json(dataUpcomingMovie);
     })
     .catch((err)=>{
-        res.send("Error");
+        res.status(500).send("Error");
     })
 
 } 
@@ -136,7 +136,9 @@ function addMovieHandler(req,res){
         res.status(201).json(result.rows)
 
     }
-    ).catch() 
+    ).catch((err)=>{
+        res.status(500).send("Error");
+    })
 
 }
 function  getMoviesHandler (req,res){
@@ -145,7 +147,9 @@ function  getMoviesHandler (req,res){
         res.json(result.rows)
     }
 
-    ).catch()
+    ).catch((err)=>{
+        res.status(500).send("Error");
+    })
 }
 
 function updateHandler(req,res){
@@ -155,8 +159,9 @@ function updateHandler(req,res){
     let values = [comment, id];
     client.query(sql,values).then(result=>{
         res.send(result.rows)
-    }).catch()
-
+    }).catch((err)=>{
+        res.status(500).send("Error");
+    })
 }
 
 function deleteHandler(req,res){
@@ -165,8 +170,9 @@ function deleteHandler(req,res){
     let value = [id];
     client.query(sql,value).then(result=>{
         res.status(204).send("DELETED");
-    }).catch()
-
+    }).catch((err)=>{
+        res.status(500).send("Error");
+    })
 }
 
 function getMovieHandler(req,res){
@@ -177,8 +183,9 @@ function getMovieHandler(req,res){
         res.json(result.rows)
     }
 
-    ).catch()
-
+    ).catch((err)=>{
+        res.status(500).send("Error");
+    })
 }
 
 
@@ -203,4 +210,6 @@ client.connect().then(()=>{
     app.listen(port, () => {
       console.log(`Example app listening on port ${port}`);
   })
-}).catch()
+}).catch((err)=>{
+    res.status(500).send("Error");
+})
