@@ -5,11 +5,10 @@ const axios = require('axios');
 require('dotenv').config();
 const movieData = require('./Movie Data/data.json');
 const app = express();
-const port = process.env.port;
+const port = process.env.PORT;
 const bodyParser = require('body-parser');
-const password = process.env.PASSWORD;
 const { Client } = require('pg')
-let url = `postgres://bygzbewp:d0C4K5AWixab7hXywU_dmuu8vlP9U0if@kashin.db.elephantsql.com/bygzbewp`;
+let url = process.env.url;
 const client = new Client(url)
 
 app.get('/', moviesHandler);
