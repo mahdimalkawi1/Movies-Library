@@ -211,5 +211,4 @@ client.connect().then(()=>{
       console.log(`Example app listening on port ${port}`);
   })
 }).catch((err)=>{
-    res.status(500).send("Error");
-})
+    console.log("error")})
