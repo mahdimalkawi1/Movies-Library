@@ -6,7 +6,9 @@ require('dotenv').config();
 const movieData = require('./Movie Data/data.json');
 const app = express();
 const port = process.env.PORT;
-const bodyParser = require('body-parser');
+let bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 const { Client } = require('pg')
 let url = process.env.url;
 const client = new Client(url)
@@ -56,9 +58,7 @@ function trendingHandler(req,res){
     let trendingMovie = req.query.name;
 
     let url= `https://api.themoviedb.org/3/trending/all/week?api_key=37ddc7081e348bf246a42f3be2b3dfd0&language=en-US`;
-    // let result={};
-        // let trendingMovie = new Movie (movieData.id,movieData.title,movieData.release_date,movieData.poster_path,movieData.overview);
-        // let result= trendingMovie;
+    
     axios.get(url)
     .then((result)=>{
         // res.json(result);
@@ -129,6 +129,7 @@ function upComingMovieHandler (req,res){
 
 function addMovieHandler(req,res){
     let {title,release_date,poster_path} = req.body;
+    console.log(req.body);
     let sql = `INSERT INTO movies (title,release_date,poster_path)
     VALUES ($1,$2,$3) RETURNING *;`
     let values = [title,release_date,poster_path];
